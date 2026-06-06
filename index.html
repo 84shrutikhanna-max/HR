@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HR Performance Analysis</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">HR</div>
+        <div>
+          <strong>PeopleOps</strong>
+          <span>Performance</span>
+        </div>
+      </div>
+
+      <nav class="nav-list" aria-label="Main navigation">
+        <button class="nav-item active" data-view="dashboard" type="button">Dashboard</button>
+        <button class="nav-item" data-view="employees" type="button">Employees</button>
+        <button class="nav-item" data-view="reviews" type="button">Reviews</button>
+        <button class="nav-item" data-view="compensation" type="button">Compensation</button>
+      </nav>
+
+      <div class="side-panel">
+        <span class="eyebrow">Review Cycle</span>
+        <strong>Q2 2026</strong>
+        <p>148 active reviews</p>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <span class="eyebrow">Analytics Workspace</span>
+          <h1>Performance Analysis</h1>
+        </div>
+        <div class="topbar-actions">
+          <label class="search">
+            <span>Search</span>
+            <input id="searchInput" type="search" placeholder="Name, role, department">
+          </label>
+          <button id="exportBtn" class="primary-btn" type="button">Export Report</button>
+        </div>
+      </header>
+
+      <section id="dashboardView" class="metrics-grid" aria-label="Performance metrics">
+        <article class="metric-card">
+          <span>Average Score</span>
+          <strong id="avgScore">0.0</strong>
+          <small id="scoreDelta">Across selected staff</small>
+        </article>
+        <article class="metric-card">
+          <span>Top Performers</span>
+          <strong id="topCount">0</strong>
+          <small>Score of 4.5 or higher</small>
+        </article>
+        <article class="metric-card">
+          <span>At Risk</span>
+          <strong id="riskCount">0</strong>
+          <small>Needs manager follow-up</small>
+        </article>
+        <article class="metric-card">
+          <span>Training Need</span>
+          <strong id="trainingCount">0</strong>
+          <small>Recommended learning plans</small>
+        </article>
+      </section>
+
+      <section class="workspace">
+        <div class="analysis-panel">
+          <div class="panel-header">
+            <div>
+              <span class="eyebrow">Department View</span>
+              <h2>Performance Distribution</h2>
+            </div>
+            <select id="departmentFilter" aria-label="Filter by department">
+              <option value="all">All departments</option>
+            </select>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="performanceChart" width="900" height="360" aria-label="Department performance chart"></canvas>
+          </div>
+        </div>
+
+        <aside id="reviewsView" class="review-panel">
+          <div class="panel-header compact">
+            <div>
+              <span class="eyebrow">Selected Employee</span>
+              <h2 id="selectedName">Select a record</h2>
+            </div>
+            <span id="selectedBadge" class="status-badge neutral">Pending</span>
+          </div>
+
+          <div class="employee-summary">
+            <div>
+              <span>Role</span>
+              <strong id="selectedRole">-</strong>
+            </div>
+            <div>
+              <span>Department</span>
+              <strong id="selectedDepartment">-</strong>
+            </div>
+            <div>
+              <span>Score</span>
+              <strong id="selectedScore">-</strong>
+            </div>
+          </div>
+
+          <form id="reviewForm" class="review-form">
+            <label>
+              Quality
+              <input id="qualityInput" type="range" min="1" max="5" step="0.1" value="3">
+            </label>
+            <label>
+              Delivery
+              <input id="deliveryInput" type="range" min="1" max="5" step="0.1" value="3">
+            </label>
+            <label>
+              Collaboration
+              <input id="collaborationInput" type="range" min="1" max="5" step="0.1" value="3">
+            </label>
+            <label>
+              Growth
+              <input id="growthInput" type="range" min="1" max="5" step="0.1" value="3">
+            </label>
+            <button class="primary-btn full" type="submit">Update Review</button>
+          </form>
+        </aside>
+      </section>
+
+      <section id="employeesView" class="table-panel">
+        <div class="panel-header">
+          <div>
+            <span class="eyebrow">Employee Records</span>
+            <h2>Review Outcomes</h2>
+          </div>
+          <div class="sort-tools" role="group" aria-label="Sort employees">
+            <button class="tool-btn active" data-sort="score" type="button">Score</button>
+            <button class="tool-btn" data-sort="name" type="button">Name</button>
+            <button class="tool-btn" data-sort="department" type="button">Department</button>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Employee</th>
+                <th>Department</th>
+                <th>Role</th>
+                <th>Score</th>
+                <th>Trend</th>
+                <th>Recommendation</th>
+              </tr>
+            </thead>
+            <tbody id="employeeTable"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="script.js"></script>
+</body>
+</html>
