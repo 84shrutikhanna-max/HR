@@ -21,6 +21,9 @@
         <button class="nav-item active" data-view="dashboard" type="button">Dashboard</button>
         <button class="nav-item" data-view="employees" type="button">Employees</button>
         <button class="nav-item" data-view="reviews" type="button">Reviews</button>
+        <button class="nav-item" data-view="attendance" type="button">Attendance</button>
+        <button class="nav-item" data-view="leaves" type="button">Leaves</button>
+        <button class="nav-item" data-view="expenses" type="button">Reimbursements</button>
         <button class="nav-item" data-view="compensation" type="button">Compensation</button>
       </nav>
 
@@ -157,6 +160,141 @@
               </tr>
             </thead>
             <tbody id="employeeTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="attendanceView" class="table-panel">
+        <div class="panel-header">
+          <div>
+            <span class="eyebrow">Attendance Monitor</span>
+            <h2>Employee Attendance</h2>
+          </div>
+          <span id="attendanceSummary" class="status-badge neutral">0 records</span>
+        </div>
+
+        <div class="summary-strip" aria-label="Attendance summary">
+          <div>
+            <span>Present Today</span>
+            <strong id="presentCount">0</strong>
+          </div>
+          <div>
+            <span>Late Arrivals</span>
+            <strong id="lateCount">0</strong>
+          </div>
+          <div>
+            <span>Remote Staff</span>
+            <strong id="remoteCount">0</strong>
+          </div>
+          <div>
+            <span>Absent</span>
+            <strong id="absentCount">0</strong>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Employee</th>
+                <th>Date</th>
+                <th>Check In</th>
+                <th>Check Out</th>
+                <th>Hours</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="attendanceTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="leavesView" class="table-panel">
+        <div class="panel-header">
+          <div>
+            <span class="eyebrow">Leave Management</span>
+            <h2>Leave Requests</h2>
+          </div>
+          <span id="leaveSummary" class="status-badge neutral">0 pending</span>
+        </div>
+
+        <div class="summary-strip" aria-label="Leave summary">
+          <div>
+            <span>Approved</span>
+            <strong id="approvedLeaveCount">0</strong>
+          </div>
+          <div>
+            <span>Pending</span>
+            <strong id="pendingLeaveCount">0</strong>
+          </div>
+          <div>
+            <span>Rejected</span>
+            <strong id="rejectedLeaveCount">0</strong>
+          </div>
+          <div>
+            <span>Total Days</span>
+            <strong id="leaveDaysCount">0</strong>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Employee</th>
+                <th>Leave Type</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Days</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="leaveTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="expensesView" class="table-panel">
+        <div class="panel-header">
+          <div>
+            <span class="eyebrow">Finance Queue</span>
+            <h2>Expense Reimbursements</h2>
+          </div>
+          <span id="expenseSummary" class="status-badge neutral">AED 0 pending</span>
+        </div>
+
+        <div class="summary-strip" aria-label="Expense reimbursement summary">
+          <div>
+            <span>Submitted</span>
+            <strong id="submittedExpenseTotal">AED 0</strong>
+          </div>
+          <div>
+            <span>Approved</span>
+            <strong id="approvedExpenseTotal">AED 0</strong>
+          </div>
+          <div>
+            <span>Pending</span>
+            <strong id="pendingExpenseTotal">AED 0</strong>
+          </div>
+          <div>
+            <span>Paid</span>
+            <strong id="paidExpenseTotal">AED 0</strong>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Employee</th>
+                <th>Category</th>
+                <th>Submitted</th>
+                <th>Amount</th>
+                <th>Approver</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="expenseTable"></tbody>
           </table>
         </div>
       </section>

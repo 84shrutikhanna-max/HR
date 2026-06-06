@@ -121,6 +121,37 @@ const employees = [
   }
 ];
 
+const attendanceRecords = [
+  { employeeId: 1, date: "2026-06-06", checkIn: "08:55", checkOut: "17:10", hours: 8.3, status: "Present" },
+  { employeeId: 2, date: "2026-06-06", checkIn: "09:18", checkOut: "17:35", hours: 8.0, status: "Late" },
+  { employeeId: 3, date: "2026-06-06", checkIn: "08:47", checkOut: "17:05", hours: 8.3, status: "Present" },
+  { employeeId: 4, date: "2026-06-06", checkIn: "09:00", checkOut: "18:20", hours: 9.0, status: "Remote" },
+  { employeeId: 5, date: "2026-06-06", checkIn: "-", checkOut: "-", hours: 0, status: "Absent" },
+  { employeeId: 6, date: "2026-06-06", checkIn: "08:59", checkOut: "17:42", hours: 8.7, status: "Present" },
+  { employeeId: 7, date: "2026-06-06", checkIn: "09:12", checkOut: "17:40", hours: 8.1, status: "Late" },
+  { employeeId: 8, date: "2026-06-06", checkIn: "09:05", checkOut: "18:15", hours: 8.8, status: "Remote" },
+  { employeeId: 9, date: "2026-06-06", checkIn: "08:50", checkOut: "17:18", hours: 8.5, status: "Present" },
+  { employeeId: 10, date: "2026-06-06", checkIn: "09:02", checkOut: "17:25", hours: 8.2, status: "Present" }
+];
+
+const leaveRequests = [
+  { employeeId: 1, type: "Annual Leave", from: "2026-06-18", to: "2026-06-21", days: 4, status: "Approved" },
+  { employeeId: 2, type: "Sick Leave", from: "2026-06-09", to: "2026-06-10", days: 2, status: "Pending" },
+  { employeeId: 3, type: "Work From Home", from: "2026-06-12", to: "2026-06-12", days: 1, status: "Approved" },
+  { employeeId: 5, type: "Emergency Leave", from: "2026-06-06", to: "2026-06-06", days: 1, status: "Pending" },
+  { employeeId: 7, type: "Training Leave", from: "2026-06-24", to: "2026-06-25", days: 2, status: "Approved" },
+  { employeeId: 8, type: "Annual Leave", from: "2026-06-16", to: "2026-06-20", days: 5, status: "Rejected" }
+];
+
+const expenseClaims = [
+  { employeeId: 1, category: "Recruitment Travel", submitted: "2026-06-03", amount: 1280, approver: "Lina Omar", status: "Approved" },
+  { employeeId: 2, category: "Payroll Software", submitted: "2026-06-02", amount: 740, approver: "Ravi Menon", status: "Pending" },
+  { employeeId: 4, category: "Client Meeting", submitted: "2026-06-01", amount: 520, approver: "Nadia Ali", status: "Paid" },
+  { employeeId: 6, category: "Customer Visit", submitted: "2026-06-04", amount: 960, approver: "Maya Santos", status: "Pending" },
+  { employeeId: 7, category: "Learning Materials", submitted: "2026-05-30", amount: 430, approver: "Lina Omar", status: "Approved" },
+  { employeeId: 9, category: "Operations Transport", submitted: "2026-06-05", amount: 310, approver: "Hassan Noor", status: "Paid" }
+];
+
 const state = {
   selectedId: employees[0].id,
   sortBy: "score",
@@ -153,7 +184,28 @@ const elements = {
   navButtons: document.querySelectorAll(".nav-item"),
   dashboardView: document.querySelector("#dashboardView"),
   employeesView: document.querySelector("#employeesView"),
-  reviewsView: document.querySelector("#reviewsView")
+  reviewsView: document.querySelector("#reviewsView"),
+  attendanceView: document.querySelector("#attendanceView"),
+  leavesView: document.querySelector("#leavesView"),
+  expensesView: document.querySelector("#expensesView"),
+  attendanceSummary: document.querySelector("#attendanceSummary"),
+  attendanceTable: document.querySelector("#attendanceTable"),
+  presentCount: document.querySelector("#presentCount"),
+  lateCount: document.querySelector("#lateCount"),
+  remoteCount: document.querySelector("#remoteCount"),
+  absentCount: document.querySelector("#absentCount"),
+  leaveSummary: document.querySelector("#leaveSummary"),
+  leaveTable: document.querySelector("#leaveTable"),
+  approvedLeaveCount: document.querySelector("#approvedLeaveCount"),
+  pendingLeaveCount: document.querySelector("#pendingLeaveCount"),
+  rejectedLeaveCount: document.querySelector("#rejectedLeaveCount"),
+  leaveDaysCount: document.querySelector("#leaveDaysCount"),
+  expenseSummary: document.querySelector("#expenseSummary"),
+  expenseTable: document.querySelector("#expenseTable"),
+  submittedExpenseTotal: document.querySelector("#submittedExpenseTotal"),
+  approvedExpenseTotal: document.querySelector("#approvedExpenseTotal"),
+  pendingExpenseTotal: document.querySelector("#pendingExpenseTotal"),
+  paidExpenseTotal: document.querySelector("#paidExpenseTotal")
 };
 
 function getScore(employee) {
@@ -195,6 +247,31 @@ function getInitials(name) {
     .slice(0, 2)
     .join("")
     .toUpperCase();
+}
+
+function getEmployeeName(employeeId) {
+  const employee = employees.find(item => item.id === employeeId);
+  return employee ? employee.name : "Unknown Employee";
+}
+
+function formatCurrency(amount) {
+  return `AED ${amount.toLocaleString("en-US")}`;
+}
+
+function getStatusBadge(status) {
+  const normalized = status.toLowerCase();
+  const className = {
+    present: "high",
+    approved: "high",
+    paid: "high",
+    remote: "neutral",
+    pending: "medium",
+    late: "medium",
+    absent: "low",
+    rejected: "low"
+  }[normalized] || "neutral";
+
+  return `<span class="status-badge ${className}">${status}</span>`;
 }
 
 function getFilteredEmployees() {
@@ -283,6 +360,93 @@ function renderTable(data) {
     });
 
     elements.table.append(row);
+  });
+}
+
+function renderAttendance() {
+  const present = attendanceRecords.filter(record => record.status === "Present").length;
+  const late = attendanceRecords.filter(record => record.status === "Late").length;
+  const remote = attendanceRecords.filter(record => record.status === "Remote").length;
+  const absent = attendanceRecords.filter(record => record.status === "Absent").length;
+
+  elements.presentCount.textContent = present;
+  elements.lateCount.textContent = late;
+  elements.remoteCount.textContent = remote;
+  elements.absentCount.textContent = absent;
+  elements.attendanceSummary.textContent = `${attendanceRecords.length} records`;
+  elements.attendanceTable.innerHTML = "";
+
+  attendanceRecords.forEach(record => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${getEmployeeName(record.employeeId)}</td>
+      <td>${record.date}</td>
+      <td>${record.checkIn}</td>
+      <td>${record.checkOut}</td>
+      <td>${record.hours.toFixed(1)}</td>
+      <td>${getStatusBadge(record.status)}</td>
+    `;
+    elements.attendanceTable.append(row);
+  });
+}
+
+function renderLeaves() {
+  const approved = leaveRequests.filter(request => request.status === "Approved").length;
+  const pending = leaveRequests.filter(request => request.status === "Pending").length;
+  const rejected = leaveRequests.filter(request => request.status === "Rejected").length;
+  const totalDays = leaveRequests.reduce((sum, request) => sum + request.days, 0);
+
+  elements.approvedLeaveCount.textContent = approved;
+  elements.pendingLeaveCount.textContent = pending;
+  elements.rejectedLeaveCount.textContent = rejected;
+  elements.leaveDaysCount.textContent = totalDays;
+  elements.leaveSummary.textContent = `${pending} pending`;
+  elements.leaveTable.innerHTML = "";
+
+  leaveRequests.forEach(request => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${getEmployeeName(request.employeeId)}</td>
+      <td>${request.type}</td>
+      <td>${request.from}</td>
+      <td>${request.to}</td>
+      <td>${request.days}</td>
+      <td>${getStatusBadge(request.status)}</td>
+    `;
+    elements.leaveTable.append(row);
+  });
+}
+
+function renderExpenses() {
+  const submittedTotal = expenseClaims.reduce((sum, claim) => sum + claim.amount, 0);
+  const approvedTotal = expenseClaims
+    .filter(claim => claim.status === "Approved")
+    .reduce((sum, claim) => sum + claim.amount, 0);
+  const pendingTotal = expenseClaims
+    .filter(claim => claim.status === "Pending")
+    .reduce((sum, claim) => sum + claim.amount, 0);
+  const paidTotal = expenseClaims
+    .filter(claim => claim.status === "Paid")
+    .reduce((sum, claim) => sum + claim.amount, 0);
+
+  elements.submittedExpenseTotal.textContent = formatCurrency(submittedTotal);
+  elements.approvedExpenseTotal.textContent = formatCurrency(approvedTotal);
+  elements.pendingExpenseTotal.textContent = formatCurrency(pendingTotal);
+  elements.paidExpenseTotal.textContent = formatCurrency(paidTotal);
+  elements.expenseSummary.textContent = `${formatCurrency(pendingTotal)} pending`;
+  elements.expenseTable.innerHTML = "";
+
+  expenseClaims.forEach(claim => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${getEmployeeName(claim.employeeId)}</td>
+      <td>${claim.category}</td>
+      <td>${claim.submitted}</td>
+      <td>${formatCurrency(claim.amount)}</td>
+      <td>${claim.approver}</td>
+      <td>${getStatusBadge(claim.status)}</td>
+    `;
+    elements.expenseTable.append(row);
   });
 }
 
@@ -459,6 +623,9 @@ function scrollToView(view) {
     dashboard: elements.dashboardView,
     employees: elements.employeesView,
     reviews: elements.reviewsView,
+    attendance: elements.attendanceView,
+    leaves: elements.leavesView,
+    expenses: elements.expensesView,
     compensation: elements.dashboardView
   };
 
@@ -476,6 +643,9 @@ function renderAll() {
   renderTable(data);
   renderSelectedEmployee();
   renderChart(data);
+  renderAttendance();
+  renderLeaves();
+  renderExpenses();
 }
 
 function bindEvents() {
